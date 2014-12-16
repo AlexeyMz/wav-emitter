@@ -1,0 +1,67 @@
+apply plugin: 'java'
+apply plugin: 'spring-boot'
+apply plugin: 'war'
+
+version = '0.1'
+
+compileJava {
+    options.encoding = 'UTF-8'
+    sourceCompatibility = 1.7
+}
+
+buildscript {
+    repositories {
+        maven { url "http://repo.spring.io/libs-release" }
+        mavenLocal()
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.1.4.RELEASE")
+    }
+}
+
+jar {
+    baseName = 'wav-emitter'
+    version =  '0.1.0'
+}
+
+war {
+    from "static"
+    baseName = 'wav-emitter'
+    version = '0.1.0'
+    configurations {
+        providedRuntime
+    }
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven { url "http://repo.spring.io/libs-release" }
+}
+
+onlyFor(war) {
+    dependencies {
+        providedRuntime("org.springframework.boot:spring-boot-starter-tomcat")
+    }
+}
+
+dependencies {
+    compile("org.springframework.boot:spring-boot-starter-web")
+    compile("org.springframework.boot:spring-boot-starter-thymeleaf")
+    compile("org.springframework:spring-context-support")
+    compile("com.google.guava:guava:18.0")
+}
+
+startScripts.dependsOn findMainClass
+
+task stage(dependsOn: ['clean', 'installApp'])
+
+def onlyFor(task, config) {
+    gradle.taskGraph.whenReady { graph ->
+        if (graph.hasTask(task)) {
+            project.configure(project, config)
+        }
+    }
+}
+

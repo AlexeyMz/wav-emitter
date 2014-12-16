@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>Wave Emitter</title>
+    <script src="js/jquery/jquery-2.1.1.js"></script>
+    <script src="js/jquery/jquery.base64.js"></script>
+</head>
+<body>
+<form id="requestForm">
+    <label for="freq">Base frequency:</label>
+    <div>
+        <input id="freq" type="text" size="40" />
+        <input id="submitRequest" type="button" value="Play" />
+    </div>
+</form>
+<div id="errorMessage" style="display: none"></div>
+<a id="download" download="speech-data.xml" style="display: none">Download XML</a>
+<div id="response" class="xmlBlock"></div>
+<audio style="margin-top: 20px;" controls="controls">
+    Your browser does not support the audio element.
+</audio>
+<script>
+    $(document).ready(function () {
+        var $button = $("#submitRequest");
+        var $freq = $("#freq");
+        var audioElem = $("audio").get(0);
+        $button.click(function () {
+            audioElem.src = "api/endless/" + $freq.val();
+            audioElem.play();
+        });
+    });
+</script>
+</body>
+</html>
